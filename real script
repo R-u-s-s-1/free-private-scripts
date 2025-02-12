@@ -1,0 +1,30 @@
+--loader
+local HttpService = game:GetService("HttpService")
+local HttpRequest = syn and syn.request or http and http.request or HttpRequest or request or httprequest
+
+local function LoadCustomFile(assetName, uri, raf, s)
+
+    local response = HttpRequest({
+        Url = uri,
+        Method = "GET",
+        Headers = {
+            ["Authorization"] = "Bearer " .. s
+        }
+    })
+    if response and response.StatusCode == 200 then
+        local func, err = loadstring(response.Body)
+        if func then
+            if raf then
+                return func()
+            else
+                return func
+            end
+        else
+            warn("Error loading asset " .. assetName .. "!")
+        end
+    else
+        warn("Failed to fetch asset " .. assetName .. ". Got " .. response.StatusCode)
+    end
+end
+
+local Lib = LoadCustomFile("my lib", "https://raw.githubusercontent.com/R-u-s-s-1/test-for-master/refs/heads/main/tester", true, "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")
